@@ -53,10 +53,12 @@ class vedirect:
             self.bytes_sum += ord(byte)
             self.key = ''
             self.value = ''
-            self.bytes_sum = 0
             self.state = self.WAIT_HEADER
-            if (self.bytes_sum == 0):
+            if (self.bytes_sum % 256 == 0):
+                self.bytes_sum = 0
                 return self.dict
+            else:
+                self.bytes_sum = 0
 
         else:
             raise AssertionError()
@@ -88,7 +90,7 @@ def print_data_callback(data):
 
 if __name__ == '__main__':
     ve = vedirect('/dev/ttyUSB0')
-    ve.read_data_callback(print_data_callback)
-    
+    #ve.read_data_callback(print_data_callback)
+    print(ve.read_data_single())
     
 
