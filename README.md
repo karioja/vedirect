@@ -1,8 +1,12 @@
 `
 karioja@karioja-virtual-machine:~/projects/vedirect$ sudo python vedirect.py 
+
 {'LOAD': 'ON', 'H19': '0', 'VPV': '0', 'ERR': '0', 'FW': '112', 'I': '0', 'H21': '0', 'PID': '0xA042', 'H20': '0', 'H23': '0', 'H22': '0', 'SER#': 'HQ1411?????', 'V': '12740', 'CS': '0', 'PPV': '0'}
+
 {'LOAD': 'ON', 'H19': '0', 'VPV': '0', 'ERR': '0', 'FW': '112', 'I': '0', 'H21': '0', 'PID': '0xA042', 'H20': '0', 'H23': '0', 'H22': '0', 'SER#': 'HQ1411?????', 'V': '12740', 'CS': '0', 'PPV': '0'}
+
 {'LOAD': 'ON', 'H19': '0', 'VPV': '0', 'ERR': '0', 'FW': '112', 'I': '0', 'H21': '0', 'PID': '0xA042', 'H20': '0', 'H23': '0', 'H22': '0', 'SER#': 'HQ1411?????', 'V': '12740', 'CS': '0', 'PPV': '0'}
+
 ^CTraceback (most recent call last):
   File "vedirect.py", line 76, in <module>
     ve.read_data()
