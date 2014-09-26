@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os, pty, serial 
+import os, serial 
 
 class vedirect:
 
@@ -10,7 +10,6 @@ class vedirect:
         self.ser = serial.Serial(serialport, 19200, timeout=10)
         self.header1 = '\r'
         self.header2 = '\n'
-        self.footer = ''
         self.delimiter = '\t'
         self.key = ''
         self.value = ''
@@ -58,6 +57,7 @@ class vedirect:
             self.state = self.WAIT_HEADER
             if (self.bytes_sum == 0):
                 print(self.dict)
+                return self.dict
 
         else:
             raise AssertionError()
@@ -65,7 +65,14 @@ class vedirect:
     def read_data(self):
         while True:
             byte = self.ser.read(1)
-            self.input(byte)
+            packet = self.input(byte)
+
+    def read_data_single(self):
+        while True:
+            byte = self.ser.read(1)
+            packet = self.input(byte)
+            if (packet != None):
+                return packet
             
 
         
