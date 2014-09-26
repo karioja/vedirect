@@ -56,7 +56,6 @@ class vedirect:
             self.bytes_sum = 0
             self.state = self.WAIT_HEADER
             if (self.bytes_sum == 0):
-                print(self.dict)
                 return self.dict
 
         else:
@@ -75,12 +74,21 @@ class vedirect:
                 return packet
             
 
+    def read_data_callback(self, callbackFunction):
+        while True:
+            byte = self.ser.read(1)
+            packet = self.input(byte)
+            if (packet != None):
+                callbackFunction(packet)
         
 
 
+def print_data_callback(data):
+    print data
+
 if __name__ == '__main__':
     ve = vedirect('/dev/ttyUSB0')
-    ve.read_data()
+    ve.read_data_callback(print_data_callback)
     
     
 
