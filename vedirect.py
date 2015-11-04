@@ -89,8 +89,8 @@ def print_data_callback(data):
     print data
 
 if __name__ == '__main__':
-    ve = vedirect('/dev/ttyUSB0')
-    #ve.read_data_callback(print_data_callback)
-    print(ve.read_data_single())
+    ve = vedirect('/tmp/vmodem1')
+    ve.read_data_callback(print_data_callback)
+    #print(ve.read_data_single())
     
 
