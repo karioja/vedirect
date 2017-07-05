@@ -1,15 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os, serial 
+import os, serial, argparse
 
 class vedirect:
 
-    def __init__(self, serialport):
+    def __init__(self, serialport, timeout):
         self.serialport = serialport
-        self.ser = serial.Serial(serialport, 19200, timeout=10)
+        self.ser = serial.Serial(serialport, 19200, timeout=timeout)
         self.header1 = '\r'
         self.header2 = '\n'
+        self.hexmarker = ':'
         self.delimiter = '\t'
         self.key = ''
         self.value = ''
@@ -18,9 +19,13 @@ class vedirect:
         self.dict = {}
 
 
-    (WAIT_HEADER, IN_KEY, IN_VALUE, IN_CHECKSUM) = range(4)
+    (HEX, WAIT_HEADER, IN_KEY, IN_VALUE, IN_CHECKSUM) = range(5)
 
     def input(self, byte):
+        if byte == self.hexmarker and self.state != self.IN_CHECKSUM:
+            self.state = self.HEX
+            
+        
         if self.state == self.WAIT_HEADER:
             self.bytes_sum += ord(byte)
             if byte == self.header1:
@@ -58,8 +63,12 @@ class vedirect:
                 self.bytes_sum = 0
                 return self.dict
             else:
+                print 'Malformed packet'
                 self.bytes_sum = 0
-
+        elif self.state == self.HEX:
+            self.bytes_sum = 0
+            if byte == self.header2:
+                self.state = self.WAIT_HEADER
         else:
             raise AssertionError()
 
@@ -79,17 +88,23 @@ class vedirect:
     def read_data_callback(self, callbackFunction):
         while True:
             byte = self.ser.read(1)
-            packet = self.input(byte)
-            if (packet != None):
-                callbackFunction(packet)
-        
+            if byte:
+                packet = self.input(byte)
+                if (packet != None):
+                    callbackFunction(packet)
+            else:
+                break
 
 
 def print_data_callback(data):
     print data
 
 if __name__ == '__main__':
-    ve = vedirect('/tmp/vmodem1')
+    parser = argparse.ArgumentParser(description='Process VE.Direct protocol')
+    parser.add_argument('--port', help='Serial port')
+    parser.add_argument('--timeout', help='Serial port read timeout', type=int, default='60')
+    args = parser.parse_args()
+    ve = vedirect(args.port, args.timeout)
     ve.read_data_callback(print_data_callback)
     #print(ve.read_data_single())
     
