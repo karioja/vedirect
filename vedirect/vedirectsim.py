@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os, serial, time
+import os, serial, time, argparse
 
-class vedirectsim:
+class Vedirectsim:
 
     def __init__(self, serialport):
         self.serialport = serialport
@@ -41,12 +41,14 @@ class vedirectsim:
         
     def send_packet(self):
         packet = self.convert(self.dict)
-        for k in packet:
-            self.ser.write(chr(k))
+        self.ser.write(bytes(packet))
 
         
 if __name__ == '__main__':
-    ve = vedirectsim('/tmp/vmodem0')
+    parser = argparse.ArgumentParser(description='A simple VE.Direct simulator')
+    parser.add_argument('--port', help='Serial port')
+    args = parser.parse_args()
+    ve = Vedirectsim(args.port)
     while True:
         ve.send_packet()
         time.sleep(1)
