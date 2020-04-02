@@ -1,24 +1,24 @@
-Using the vedirect class.
+This is a Python library for decoding the Victron Energy VE.Direct text protocol used in their range of MPPT solar charge controllers and battery monitors.
 
-```
-$ python vedirect.py --port /dev/vmodem1 
-{'LOAD': 'ON', 'H19': '0', 'VPV': '0', 'ERR': '0', 'FW': '112', 'I': '0', 'H21': '0', 'PID': '0xA042', 'H20': '0', 'H23': '0', 'H22': '0', 'SER#': 'HQ1411?????', 'V': '12740', 'CS': '0', 'PPV': '0'}
+The test directory contains a set of live recordings of the serial port data sent by the 3 devices that I own.
 
-{'LOAD': 'ON', 'H19': '0', 'VPV': '0', 'ERR': '0', 'FW': '112', 'I': '0', 'H21': '0', 'PID': '0xA042', 'H20': '0', 'H23': '0', 'H22': '0', 'SER#': 'HQ1411?????', 'V': '12740', 'CS': '0', 'PPV': '0'}
+* SmartSolar MPPT 100/20 running firmware version 1.39
+* BlueSolar MPPT 75/15 running firmware version 1.23
+* BVM 702 battery monitor running firmware version 3.08
 
-{'LOAD': 'ON', 'H19': '0', 'VPV': '0', 'ERR': '0', 'FW': '112', 'I': '0', 'H21': '0', 'PID': '0xA042', 'H20': '0', 'H23': '0', 'H22': '0', 'SER#': 'HQ1411?????', 'V': '12740', 'CS': '0', 'PPV': '0'}
-```
-
-Using the vedirectsim simulator.
-
-Create a pair of virtual serial ports which transfer data between each other.
-
+These recordings can be fed to the Vedirect decoder using a pair of virtual serial ports. To create a pair of virtual serial ports issue the following command:
 ```
 $ socat -d -d PTY,raw,echo=0,link=/tmp/vmodem0 PTY,raw,echo=0,link=/tmp/vmodem1
 ```
+This will create 2 virtual serials ports connected to each other. Anything sent to /tmp/vmodem0 will be echoed to /tmp/vmodem1 and vice versa.
 
-Connect vedirect.py to /tmp/vmodem1 and vedirectsim.py to /tmp/vmodem0 or use a live recording from test/mppt.dump
+Attach the decoder to /tmp/vmodem1
+```
+python3 examples/vedirect_print.py --port /tmp/vmodem1
+```
 
+Feed the recording over to /tmp/vmodem0
 ```
-$ cat test/mppt.dump > /dev/vmodem0
+$ cat test/bvm702.dump > /dev/vmodem0
 ```
+There is no 1 second delay between the packets as there is with the real hardware. The above commands will flood the terminal with all of the data at once.
