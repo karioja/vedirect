@@ -19,6 +19,12 @@ python3 examples/vedirect_print.py --port /tmp/vmodem1
 
 Feed the recording over to /tmp/vmodem0
 ```
-$ cat test/bvm702.dump > /dev/vmodem0
+$ cat test/bvm702.dump > /tmp/vmodem0
 ```
 There is no 1 second delay between the packets as there is with the real hardware. The above commands will flood the terminal with all of the data at once.
+
+To simulate the behaviour of the Victron devices you can use ``awk``:
+
+```
+awk '/PID/{}; {print}; /Checksum/{system("sleep 1") };' test/bluesolar_1.23.dump > /tmp/vmodem0
+```
